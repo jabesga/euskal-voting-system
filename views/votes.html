@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Euskal Factor RESULTS</title>
+        <style>
+            html, body{
+                height: 100%;
+                width: 100%;
+            }
+            canvas {
+                padding-left: 0;
+                padding-right: 0;
+                margin-left: auto;
+                margin-right: auto;
+                display:block;
+            }
+            
+        </style>
+    </head>
+    
+    <body>
+        <h1 align="center">EUSKAL FACTOR RESULTS</h1>
+        <canvas id="canvasId"></canvas>
+        
+        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/votes.js"></script>
+        <script type="text/javascript" src="bar-graph.js"></script>
+        <script>
+            var ctx = document.getElementById("canvasId").getContext("2d");
+            var graph = new BarGraph(ctx);
+            graph.margin = 5;
+            graph.width = 450;
+            graph.height = 200;
+            graph.xAxisLabelArr = ["YES", "NO"];
+            graph.update([0, 0]);
+            
+            function update(yes, no){
+                graph.update([yes, no])
+            }
+        </script>
+    </body>
+</html>
