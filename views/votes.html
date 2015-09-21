@@ -9,6 +9,7 @@
                 width: 100%;
             }
             canvas {
+                margin-top: 5%;
                 padding-left: 0;
                 padding-right: 0;
                 margin-left: auto;
@@ -26,19 +27,29 @@
         <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script src="/votes.js"></script>
-        <script type="text/javascript" src="bar-graph.js"></script>
+        <script src="/Chart.js"></script>
         <script>
             var ctx = document.getElementById("canvasId").getContext("2d");
-            var graph = new BarGraph(ctx);
-            graph.margin = 5;
-            graph.width = 450;
-            graph.height = 200;
-            graph.xAxisLabelArr = ["YES", "NO"];
-            graph.update([0, 0]);
-            
-            function update(yes, no){
-                graph.update([yes, no])
-            }
+            var data = {
+                labels: ["YES", "NO"],
+                datasets: [
+                    {
+                        label: "My First dataset",
+                        fillColor: "rgba(220,220,220,0.5)",
+                        strokeColor: "rgba(220,220,220,0.8)",
+                        highlightFill: "rgba(220,220,220,0.75)",
+                        highlightStroke: "rgba(220,220,220,1)",
+                        data: [0, 0]
+                    },
+                ]
+            };
+            var myBarChart = new Chart(ctx).Bar(data, {
+                barShowStroke: true,
+                showTooltips: false,
+                showLabelsOnBars:true,
+                barLabelFontColor:"gray",
+                scaleShowLabels: true,
+            });
         </script>
     </body>
 </html>
