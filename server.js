@@ -16,12 +16,16 @@ app.set('view engine', 'html');
 
 app.use(express.static(__dirname + '/static'));
 
+app.get('/',function(req,res){
+  res.render('index.html');
+});
+
 app.get('/votes', function (req, res) {
   res.render('votes.html');
 });
 
-app.get('/',function(req,res){
-  res.render('index.html');
+app.get('/admin',function(req,res){
+  res.render('admin.html');
 });
 
 var yes_count = 0;

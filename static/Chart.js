@@ -2310,7 +2310,7 @@
 						ctx.font = '22px "Helvetica Neue", Helvetica, Arial, sans-serif';
 						ctx.fillStyle = "#000";        
 						ctx.textAlign = "center";   
-						ctx.fillText(bar.value, this.scale.calculateBarX(this.datasets.length, datasetIndex, index), (this.scale.calculateY(bar.value))-10);
+						ctx.fillText(bar.value, this.scale.calculateBarX(this.datasets.length, datasetIndex, index), (this.scale.calculateY(bar.value))+20);
 						//Transition then draw
 						bar.transition({
 							x : this.scale.calculateBarX(this.datasets.length, datasetIndex, index),
