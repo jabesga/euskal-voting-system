@@ -1,4 +1,4 @@
-// Setup basic express server
+
 var express = require('express');
 var app = express();
 var path = require("path");
@@ -17,36 +17,55 @@ app.set('view engine', 'html');
 app.use(express.static(__dirname + '/static'));
 
 app.use(express.cookieParser());
-app.use(express.session({secret: '1234567890QWERTY', key: 'Cookie'}));
+app.use(express.session({secret: '1234567890QWERTY', key: 'limit'}));
 
 var sessionList = {};
+var yes_count = 0;
+var no_count = 0;
+var poll_disabled = true;
+var current_question = '';
 
 app.get('/',function(req,res){
-  if(req.sessionID in sessionList){
-	if(sessionList[req.sessionID].hasVoted == 'yes'){
-		res.render('already.html');
-	}
-	else{
-		res.render('index.html')
-	}
-  }
-  else{
-	  req.session.hasVoted = 'no';
-	  sessionList[req.sessionID] = req.session;
-	  res.render('index.html')
-  }
+    if(poll_disabled == false){
+        if(req.sessionID in sessionList){
+            if(sessionList[req.sessionID].hasVoted == 'yes'){
+                res.redirect('/voted')
+            }
+            else{
+                res.render('index.html', { 'question': current_question });
+            }
+        }
+        else{
+            req.session.hasVoted = 'no';
+            sessionList[req.sessionID] = req.session;
+            res.render('index.html', { 'question': current_question });
+        }
+    }
+    else{
+        res.render('poll_disabled.html');
+    }
+});
+
+app.get('/voted', function (req, res) {
+    req.session.hasVoted = 'yes';
+    sessionList[req.sessionID] = req.session;
+    res.render('already_voted.html');
 });
 
 app.get('/votes', function (req, res) {
-  res.render('votes.html');
+    if(poll_disabled == false){
+        res.render('votes.html', { 'question': current_question });
+    }
+    else{
+        res.render('poll_disabled.html');
+    }
+  
 });
 
 app.get('/admin',function(req,res){
-  res.render('admin.html');
+  res.render('admin.html', { 'question': current_question });
 });
 
-var yes_count = 0;
-var no_count = 0;
 
 io.on('connection', function (socket) {
     
@@ -77,6 +96,21 @@ io.on('connection', function (socket) {
             'no': no_count,
         });
         console.log("Someone voted NO")
+    });
+    
+    socket.on('disable poll', function (data) {
+        poll_disabled = true;
+        console.log("Poll disabled")
+    });
+    
+    socket.on('enable poll', function (data) {
+        sessionList = {};
+        yes_count = 0;
+        no_count = 0;
+        current_question = data['question'];
+        poll_disabled = false;
+        console.log("Current question:" + current_question);
+        console.log("Poll enabled")
     });
     
     socket.on('disconnect', function (data) {

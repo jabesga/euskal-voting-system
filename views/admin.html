@@ -1,1 +1,17 @@
-Hello
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        
+    </head>
+    <body>
+        <div>
+            <button id="disable_poll_button">Deshabilitar votación</button>
+        </div>
+        <div>
+            <input type="text" id="question" value="<%= question %>"/>
+            <button id="enable_poll_button">Habilitar votación</button>
+        </div>
+        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/admin.js"></script>
+    </body>
