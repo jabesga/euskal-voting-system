@@ -26,3 +26,4 @@ node server.js
 ```
 
 You can check the poll in: http://localhost:3000/
+You can check the poll results in: http://localhost:3000/votes
