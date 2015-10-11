@@ -16,8 +16,25 @@ app.set('view engine', 'html');
 
 app.use(express.static(__dirname + '/static'));
 
+app.use(express.cookieParser());
+app.use(express.session({secret: '1234567890QWERTY', key: 'Cookie'}));
+
+var sessionList = {};
+
 app.get('/',function(req,res){
-  res.render('index.html');
+  if(req.sessionID in sessionList){
+	if(sessionList[req.sessionID].hasVoted == 'yes'){
+		res.render('already.html');
+	}
+	else{
+		res.render('index.html')
+	}
+  }
+  else{
+	  req.session.hasVoted = 'no';
+	  sessionList[req.sessionID] = req.session;
+	  res.render('index.html')
+  }
 });
 
 app.get('/votes', function (req, res) {
@@ -31,10 +48,9 @@ app.get('/admin',function(req,res){
 var yes_count = 0;
 var no_count = 0;
 
-
 io.on('connection', function (socket) {
     
-    console.log('\tNew player connected');
+    console.log('\tNew user connected');
     
     socket.on('special socket', function (data) {
         console.log("special socket created");
@@ -51,7 +67,7 @@ io.on('connection', function (socket) {
             'yes': yes_count,
             'no': no_count,
         });
-        console.log("voted yes")
+        console.log("Someone voted YES")
     });
     
     socket.on('vote no', function (data) {
@@ -60,11 +76,11 @@ io.on('connection', function (socket) {
             'yes': yes_count,
             'no': no_count,
         });
-        console.log("voted no")
+        console.log("Someone voted NO")
     });
     
     socket.on('disconnect', function (data) {
-        console.log('\tPlayer disconnected');
+        console.log('\tUser disconnected');
     });
 
 });
